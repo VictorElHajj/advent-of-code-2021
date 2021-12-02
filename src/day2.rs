@@ -1,9 +1,9 @@
 #[aoc_generator(day2)]
-pub fn generator_part2(input: &str) -> Vec<Command> {
-  let commands = input.as_bytes().split(| b| *b == b'\n').map(|bytes| {
+pub fn generator_part2(input: &[u8]) -> Vec<Command> {
+  let commands = input.split(| b| *b == b'\n').map(|bytes| {
     let mut halves = bytes.split(|b| *b == b' ');
     let name = halves.next().expect("Failed to parse line.");
-    let dist = halves.next().unwrap().iter().fold(0, |tot, c| tot * 10 + (*c as usize - '0' as usize));
+    let dist = halves.next().unwrap().iter().fold(0, |tot, c| tot * 10 + (*c - b'0') as usize);
     match name[0] {
         b'f' => Command::Forward(dist),
         b'u' => Command::Up(dist),
