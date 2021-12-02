@@ -1,13 +1,13 @@
 #[aoc_generator(day2)]
 pub fn generator_part2(input: &str) -> Vec<Command> {
-  let commands = input.lines().map(|l| {
-    let mut s = l.split(" ");
-    let name = s.next().expect("Failed to parse line.");
-    let dist = s.next().unwrap().parse::<usize>().expect("Failed to parse distance.");
-    match name {
-        "forward" => Command::Forward(dist),
-        "up" => Command::Up(dist),
-        "down" => Command::Down(dist),
+  let commands = input.as_bytes().split(| b| *b == '\n' as u8).map(|bytes| {
+    let mut halves = bytes.split(|b| *b == ' ' as u8);
+    let name = halves.next().expect("Failed to parse line.");
+    let dist = halves.next().unwrap().iter().fold(0, |tot, c| tot * 10 + (*c as usize - '0' as usize));
+    match name[0] as char {
+        'f' => Command::Forward(dist),
+        'u' => Command::Up(dist),
+        'd' => Command::Down(dist),
         _ => panic!("Unexpected command name {:?}", name),
     }
   }).collect();
