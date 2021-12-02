@@ -1,6 +1,6 @@
 #[aoc_generator(day1)]
 pub fn generator_part1(input: &str) -> Vec<usize> {
-  let parsed = input.as_bytes().split(|b| *b == '\n' as u8).map(|l|
+  let parsed = input.as_bytes().split(|b| *b == b'\n').map(|l|
     l.iter().fold(0, |tot, c| tot * 10 + (*c as usize - '0' as usize))
   ).collect();
   parsed
