@@ -33,7 +33,6 @@ pub fn generator(input: &str) -> (Vec<usize>, Vec<Bingo>) {
 #[aoc(day4, part1)]
 pub fn part1((numbers, boards): &(Vec<usize>, Vec<Bingo>)) -> Result<usize, &str> {
     let mut boards = boards.clone();
-    let winner: Bingo;
     for number in numbers {
         boards = boards
             .iter()
@@ -51,7 +50,40 @@ pub fn part1((numbers, boards): &(Vec<usize>, Vec<Bingo>)) -> Result<usize, &str
     Err("Did not find winner")
 }
 
-#[derive(Clone, Copy)]
+#[aoc(day4, part2)]
+pub fn part2((numbers, boards): &(Vec<usize>, Vec<Bingo>)) -> Result<usize, &str> {
+    let mut boards = boards.clone();
+    let num_boards = boards.len();
+    let mut num_wins = 0;
+    let mut last_num = 0;
+    for number in numbers {
+        if num_wins == num_boards {
+            break;
+        }
+        last_num = *number;
+        boards = boards
+            .iter()
+            .map(|board| -> Bingo {
+                let b = board.mark(*number);
+                b
+            })
+            .filter(|board| {
+                let win = board.win();
+                if win {
+                    num_wins += 1;
+                }
+                !win || num_wins == num_boards
+            })
+            .collect::<Vec<Bingo>>();
+    }
+    println!("Remaining boards: {:?}", boards);
+    match boards.first() {
+        Some(board) => Ok(board.unmarked_sum() * last_num),
+        None => Err("Did not find winner"),
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
 pub struct Bingo {
     board: [[Tile; 5]; 5],
 }
@@ -86,7 +118,7 @@ impl Bingo {
         for column in 0..5 {
             let mut win = true;
             for i in 0..5 {
-                win = win && self.board[column][i].marked();
+                win = win && self.board[i][column].marked();
             }
             if win {
                 return true;
@@ -96,7 +128,7 @@ impl Bingo {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub enum Tile {
     Unmarked(usize),
     Marked(usize),
