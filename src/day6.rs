@@ -28,6 +28,7 @@ pub fn part1(fishes: &[u64; 9]) -> Result<u64, &str> {
 
 #[aoc(day6, part2)]
 pub fn part2(fishes: &[u64; 9]) -> Result<u64, &str> {
+    let mut fishes = fishes.clone();
     let days = 256;
     for _ in 0..days {
         let birthing = fishes[0];
